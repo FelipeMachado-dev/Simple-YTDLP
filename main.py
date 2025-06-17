@@ -14,9 +14,11 @@ def DownloadVideo(url):
         
     quality = quality_options.get(quality_choose, 'bestvideo+bestaudio')
 
+    path = 'C:/Users/Laboratório KIDS/Desktop/Teste YT-DLP/Videos/' + '/%(title)s'
+#'C:/Users/Laboratório KIDS/Desktop/Teste YT-DLP/Videos/'
     ydl_opts = {
         'format': quality,
-        'outtmpl': 'C:/Users/Laboratório KIDS/Desktop/Teste YT-DLP/Videos/%(title)s',
+        'outtmpl': path,
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
