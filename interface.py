@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFormLayout,
     QFrame, QGridLayout, QHBoxLayout, QLabel,
     QLineEdit, QMainWindow, QMenuBar, QPlainTextEdit,
     QProgressBar, QPushButton, QSizePolicy, QSpacerItem,
-    QStatusBar, QWidget)
+    QStatusBar, QWidget, QFileDialog)
 import yt_dlp
 
 class Ui_MainWindow(object):
@@ -201,9 +201,11 @@ class Ui_MainWindow(object):
 
         QMetaObject.connectSlotsByName(MainWindow)
 
+        self.pathButton.clicked.connect(self.downloadDirectory)
         self.downloadButton.clicked.connect(self.startDownload)
     # setupUi
 
+    # retranslateUi
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Simple YT-DLP", None))
 #if QT_CONFIG(tooltip)
@@ -252,8 +254,7 @@ class Ui_MainWindow(object):
         self.downloadButton.setStatusTip(QCoreApplication.translate("MainWindow", u"Download all the URLs present above.", None))
 #endif // QT_CONFIG(statustip)
         self.downloadButton.setText(QCoreApplication.translate("MainWindow", u"DOWNLOAD", None))
-    # retranslateUi
-
+    
     # Message Box    
     def show_message(self, message, sucess):
         from PySide6.QtWidgets import QMessageBox
@@ -261,6 +262,12 @@ class Ui_MainWindow(object):
             QMessageBox.information(None, "Sucess", message)
         else:
             QMessageBox.information(None, "Error", message)
+
+    # File Explorer
+    def downloadDirectory(self):
+        directory = QFileDialog.getExistingDirectory(None, "Select Directory")
+        if directory:
+            self.downloadPath.setText(directory)
 
     # Download Button Function
     def startDownload(self):
@@ -281,6 +288,7 @@ class Ui_MainWindow(object):
         self.thread.progress_changed.connect(self.progressBar.setValue)
         self.thread.finished.connect(self.show_message)
         self.thread.pDisplay.connect(self.progressBar.setHidden)
+        self.thread.dPath.connect(self.downloadPath)
         self.thread.start()
 
 # Download Class
@@ -288,6 +296,7 @@ class downloadThread(QThread):
     progress_changed = Signal(int)
     finished = Signal(str, bool)
     pDisplay = Signal(bool)
+    dPath = Signal(str)
 
     def __init__(self, url, audio=True, quality="best", playlist=False):
         super().__init__()
@@ -309,7 +318,7 @@ class downloadThread(QThread):
 
         try:        
             if self.audio:
-                path = 'C:/Users/Laboratório KIDS/Desktop/Teste YT-DLP/Videos/' + '/%(title)s'
+                path = self.dPath + '/%(title)s'
 
                 ydl_opts = {
                 'format': 'bestaudio/best',
@@ -332,7 +341,7 @@ class downloadThread(QThread):
                 
                 quality = quality_options.get(self.quality, 'bestvideo+bestaudio')
 
-                path = 'C:/Users/Laboratório KIDS/Desktop/Teste YT-DLP/Videos/' + '/%(title)s'
+                path = self.dPath + '/%(title)s'
                 ydl_opts = {
                 'format': quality,
                 'outtmpl': path,
@@ -346,7 +355,6 @@ class downloadThread(QThread):
             self.pDisplay.emit(True)
         except Exception as e:
             self.finished.emit(str(e), False)
-
 
 # App Inicialization
 if __name__ == "__main__":
