@@ -1,16 +1,6 @@
-# -*- coding: utf-8 -*-
-
-################################################################################
-## Form generated from reading UI file 'InterfaceTKfNDi.ui'
-##
-## Created by: Qt User Interface Compiler version 6.9.0
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
-
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
+    QSize, QTime, QUrl, Qt, QThread, Signal)
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
@@ -20,6 +10,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFormLayout,
     QLineEdit, QMainWindow, QMenuBar, QPlainTextEdit,
     QProgressBar, QPushButton, QSizePolicy, QSpacerItem,
     QStatusBar, QWidget)
+import yt_dlp
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -30,6 +21,7 @@ class Ui_MainWindow(object):
         MainWindow.setAutoFillBackground(False)
         MainWindow.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
         MainWindow.setDocumentMode(False)
+
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout_2 = QGridLayout(self.centralwidget)
@@ -189,9 +181,10 @@ class Ui_MainWindow(object):
         font4.setFamilies([u"Consolas"])
         font4.setBold(True)
         self.progressBar.setFont(font4)
-        self.progressBar.setValue(50)
+        self.progressBar.setValue(0)
         self.progressBar.setTextVisible(True)
         self.progressBar.setInvertedAppearance(False)
+        self.progressBar.setHidden(True)
 
         self.gridLayout_2.addWidget(self.progressBar, 4, 0, 1, 1)
 
@@ -207,6 +200,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         QMetaObject.connectSlotsByName(MainWindow)
+
+        self.downloadButton.clicked.connect(self.startDownload)
     # setupUi
 
     def retranslateUi(self, MainWindow):
@@ -219,12 +214,12 @@ class Ui_MainWindow(object):
         self.urlTextBox.setStatusTip(QCoreApplication.translate("MainWindow", u"Insert URLs here.", None))
 #endif // QT_CONFIG(statustip)
         self.urlTextBox.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Paste your URLs here. Exemple: <URL_1> <URL_2> <URL_3>...", None))
-        
+
         self.pathLabel.setText(QCoreApplication.translate("MainWindow", u"Download Folder", None))
 #if QT_CONFIG(statustip)
         self.downloadPath.setStatusTip(QCoreApplication.translate("MainWindow", u"Destination where the videos are gona be downloaded", None))
 #endif // QT_CONFIG(statustip)
-        self.downloadPath.setText(QCoreApplication.translate("MainWindow", u"Download Path", None))
+        self.downloadPath.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Download Path", None))
 
         self.pathButton.setText(QCoreApplication.translate("MainWindow", u"Change", None))
 
@@ -258,10 +253,102 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(statustip)
         self.downloadButton.setText(QCoreApplication.translate("MainWindow", u"DOWNLOAD", None))
     # retranslateUi
-        
-        #Teste para pegar valor de caminho de download
-        #print (self.downloadPath.text())
 
+    # Message Box    
+    def show_message(self, message, sucess):
+        from PySide6.QtWidgets import QMessageBox
+        if sucess:
+            QMessageBox.information(None, "Sucess", message)
+        else:
+            QMessageBox.information(None, "Error", message)
+
+    # Download Button Function
+    def startDownload(self):
+        url_text = self.urlTextBox.toPlainText().strip()
+        if not url_text:
+            self.show_message("Please paste at least one URL.", False)
+            return
+        
+        url = url_text.split()
+        audio_only = self.isAudioOnly.isChecked()
+        playlist = self.isPlaylist.isChecked()
+        quality = self.videoQualities.currentText()
+
+        self.progressBar.setValue(0)
+        self.progressBar.setHidden(False)
+
+        self.thread = downloadThread(url, audio= audio_only, playlist= playlist, quality= quality)
+        self.thread.progress_changed.connect(self.progressBar.setValue)
+        self.thread.finished.connect(self.show_message)
+        self.thread.pDisplay.connect(self.progressBar.setHidden)
+        self.thread.start()
+
+# Download Class
+class downloadThread(QThread):
+    progress_changed = Signal(int)
+    finished = Signal(str, bool)
+    pDisplay = Signal(bool)
+
+    def __init__(self, url, audio=True, quality="best", playlist=False):
+        super().__init__()
+        self.url = url
+        self.audio = audio
+        self.quality = quality
+        self.playlist = playlist
+
+    def run(self):
+        def progress_hook(d):
+            if d['status'] == 'downloading':
+                total = d.get('total_bytes') or d.get('total_bytes_estimated')
+                downloaded = d.get('downloaded_bytes', 0)
+                if total:
+                    percent = int((downloaded/total)*100)
+                    self.progress_changed.emit(percent)
+            elif d['status'] == 'finished':
+                self.progress_changed.emit(100)
+
+        try:        
+            if self.audio:
+                path = 'C:/Users/Laboratório KIDS/Desktop/Teste YT-DLP/Videos/' + '/%(title)s'
+
+                ydl_opts = {
+                'format': 'bestaudio/best',
+                'postprocessors': [{
+                        'key': 'FFmpegExtractAudio',
+                        'preferredcodec': 'mp3',
+                }],
+                'outtmpl': path,
+                'noplaylist': not self.playlist,
+                'progress_hooks': [progress_hook]
+                }
+            else:
+                quality_options ={
+                '360p': 'bestvideo[height<=360]+bestaudio/best',
+                '480p': 'bestvideo[height<=480]+bestaudio/best',
+                '720p': 'bestvideo[height<=720]+bestaudio/best',
+                '1080p': 'bestvideo[height<=1080]+bestaudio/best',
+                '1440p': 'bestvideo[height<=1440]+bestaudio/best',
+                }
+                
+                quality = quality_options.get(self.quality, 'bestvideo+bestaudio')
+
+                path = 'C:/Users/Laboratório KIDS/Desktop/Teste YT-DLP/Videos/' + '/%(title)s'
+                ydl_opts = {
+                'format': quality,
+                'outtmpl': path,
+                'noplaylist': not self.playlist,
+                'progress_hooks': [progress_hook]
+                }
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download(self.url)
+            self.finished.emit("Download Completed!", True)
+            self.pDisplay.emit(True)
+        except Exception as e:
+            self.finished.emit(str(e), False)
+
+
+# App Inicialization
 if __name__ == "__main__":
     import sys
 
