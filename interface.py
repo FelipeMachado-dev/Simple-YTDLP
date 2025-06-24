@@ -64,23 +64,23 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addLayout(self.horizontalLayout_2, 2, 0, 1, 2)
 
-        self.frameDownloadProgress = QFrame(self.centralwidget)
-        self.frameDownloadProgress.setObjectName(u"frame_2")
+        self.frame_2 = QFrame(self.centralwidget)
+        self.frame_2.setObjectName(u"frame_2")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frameDownloadProgress.sizePolicy().hasHeightForWidth())
-        self.frameDownloadProgress.setSizePolicy(sizePolicy)
-        self.frameDownloadProgress.setMinimumSize(QSize(200, 28))
+        sizePolicy.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
+        self.frame_2.setSizePolicy(sizePolicy)
+        self.frame_2.setMinimumSize(QSize(200, 28))
         palette = QPalette()
         brush = QBrush(QColor(45, 45, 45, 0))
         brush.setStyle(Qt.BrushStyle.SolidPattern)
         palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush)
         palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Base, brush)
-        self.frameDownloadProgress.setPalette(palette)
-        self.frameDownloadProgress.setFrameShape(QFrame.Shape.NoFrame)
-        self.frameDownloadProgress.setFrameShadow(QFrame.Shadow.Raised)
-        self.progressBar = QProgressBar(self.frameDownloadProgress)
+        self.frame_2.setPalette(palette)
+        self.frame_2.setFrameShape(QFrame.Shape.NoFrame)
+        self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
+        self.progressBar = QProgressBar(self.frame_2)
         self.progressBar.setObjectName(u"progressBar")
         self.progressBar.setEnabled(True)
         self.progressBar.setGeometry(QRect(19, 0, 525, 25))
@@ -119,7 +119,7 @@ class Ui_MainWindow(object):
         self.progressBar.setValue(50)
         self.progressBar.setTextVisible(True)
         self.progressBar.setInvertedAppearance(False)
-        self.downloadProgressLabel = QLabel(self.frameDownloadProgress)
+        self.downloadProgressLabel = QLabel(self.frame_2)
         self.downloadProgressLabel.setObjectName(u"downloadProgressLabel")
         self.downloadProgressLabel.setEnabled(True)
         self.downloadProgressLabel.setGeometry(QRect(509, 13, 21, 14))
@@ -135,7 +135,7 @@ class Ui_MainWindow(object):
         self.downloadProgressLabel.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
         self.downloadProgressLabel.setWordWrap(False)
 
-        self.gridLayout_2.addWidget(self.frameDownloadProgress, 4, 0, 1, 2)
+        self.gridLayout_2.addWidget(self.frame_2, 4, 0, 1, 2)
 
         self.urlTextBox = QPlainTextEdit(self.centralwidget)
         self.urlTextBox.setObjectName(u"urlTextBox")
@@ -325,7 +325,7 @@ class Ui_MainWindow(object):
         self.videoQualities.setCurrentIndex(-1)
 
         # Hide Download Frame
-        self.frameDownloadProgress.setHidden(True)
+        self.frame_2.setHidden(True)
 
     # Message Box    
     def show_message(self, message, sucess):
@@ -365,7 +365,7 @@ class Ui_MainWindow(object):
         dPath = self.downloadPath.text()
 
         self.progressBar.setValue(0)
-        self.frameDownloadProgress.setHidden(False)
+        self.frame_2.setHidden(False)
         self.progressBar.setHidden(False)
         self.downloadProgressLabel.setHidden(False)
         
@@ -373,7 +373,7 @@ class Ui_MainWindow(object):
         self.thread = downloadThread(url, qUrl,audio= audio_only, playlist= playlist, quality= quality, dPath= dPath)
         self.thread.progress_changed.connect(self.progressBar.setValue)
         self.thread.finished.connect(self.show_message)
-        self.thread.fDownloadProgress.connect(self.frameDownloadProgress.setHidden)
+        self.thread.fDownloadProgress.connect(self.frame_2.setHidden)
         self.thread.pBarDisplay.connect(self.progressBar.setHidden)
         self.thread.dCountDisplay.connect(self.downloadProgressLabel.setHidden)
         self.thread.dCountTotal.connect(self.downloadProgressLabel.setText)
