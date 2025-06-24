@@ -4,6 +4,16 @@ from PySide6.QtWidgets import QFileDialog
 import yt_dlp
 
 # Interface Imports
+# -*- coding: utf-8 -*-
+
+################################################################################
+## Form generated from reading UI file 'InterfaceVvHJaX.ui'
+##
+## Created by: Qt User Interface Compiler version 6.9.0
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
+
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
@@ -18,11 +28,10 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFormLayout,
     QStatusBar, QWidget)
 
 class Ui_MainWindow(object):
-    # setupUi
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(569, 600)
+        MainWindow.resize(570, 600)
         MainWindow.setToolTipDuration(-1)
         MainWindow.setAutoFillBackground(False)
         MainWindow.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
@@ -53,50 +62,94 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.pathButton)
 
 
-        self.gridLayout_2.addLayout(self.horizontalLayout_2, 2, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.horizontalLayout_2, 2, 0, 1, 2)
 
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer)
-
-        self.titleLabel = QLabel(self.centralwidget)
-        self.titleLabel.setObjectName(u"titleLabel")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.frameDownloadProgress = QFrame(self.centralwidget)
+        self.frameDownloadProgress.setObjectName(u"frame_2")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.titleLabel.sizePolicy().hasHeightForWidth())
-        self.titleLabel.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(self.frameDownloadProgress.sizePolicy().hasHeightForWidth())
+        self.frameDownloadProgress.setSizePolicy(sizePolicy)
+        self.frameDownloadProgress.setMinimumSize(QSize(200, 28))
+        palette = QPalette()
+        brush = QBrush(QColor(45, 45, 45, 0))
+        brush.setStyle(Qt.BrushStyle.SolidPattern)
+        palette.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Base, brush)
+        palette.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Base, brush)
+        self.frameDownloadProgress.setPalette(palette)
+        self.frameDownloadProgress.setFrameShape(QFrame.Shape.NoFrame)
+        self.frameDownloadProgress.setFrameShadow(QFrame.Shadow.Raised)
+        self.progressBar = QProgressBar(self.frameDownloadProgress)
+        self.progressBar.setObjectName(u"progressBar")
+        self.progressBar.setEnabled(True)
+        self.progressBar.setGeometry(QRect(19, 0, 525, 25))
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.progressBar.sizePolicy().hasHeightForWidth())
+        self.progressBar.setSizePolicy(sizePolicy1)
+        self.progressBar.setMinimumSize(QSize(400, 25))
+        palette1 = QPalette()
+        brush1 = QBrush(QColor(30, 30, 30, 0))
+        brush1.setStyle(Qt.BrushStyle.SolidPattern)
+        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Window, brush1)
+        brush2 = QBrush(QColor(255, 85, 0, 255))
+        brush2.setStyle(Qt.BrushStyle.SolidPattern)
+        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Highlight, brush2)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+        palette1.setBrush(QPalette.ColorGroup.Active, QPalette.ColorRole.Accent, brush2)
+#endif
+        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Window, brush1)
+        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Highlight, brush2)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+        palette1.setBrush(QPalette.ColorGroup.Inactive, QPalette.ColorRole.Accent, brush2)
+#endif
+        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Base, brush1)
+        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Window, brush1)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+        palette1.setBrush(QPalette.ColorGroup.Disabled, QPalette.ColorRole.Accent, brush2)
+#endif
+        self.progressBar.setPalette(palette1)
         font1 = QFont()
         font1.setFamilies([u"Consolas"])
-        font1.setPointSize(24)
         font1.setBold(True)
-        self.titleLabel.setFont(font1)
-        self.titleLabel.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
+        self.progressBar.setFont(font1)
+        self.progressBar.setAutoFillBackground(False)
+        self.progressBar.setValue(50)
+        self.progressBar.setTextVisible(True)
+        self.progressBar.setInvertedAppearance(False)
+        self.downloadProgressLabel = QLabel(self.frameDownloadProgress)
+        self.downloadProgressLabel.setObjectName(u"downloadProgressLabel")
+        self.downloadProgressLabel.setEnabled(True)
+        self.downloadProgressLabel.setGeometry(QRect(509, 13, 21, 14))
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.downloadProgressLabel.sizePolicy().hasHeightForWidth())
+        self.downloadProgressLabel.setSizePolicy(sizePolicy2)
+        self.downloadProgressLabel.setMinimumSize(QSize(0, 0))
+        self.downloadProgressLabel.setFont(font1)
+        self.downloadProgressLabel.setTabletTracking(False)
+        self.downloadProgressLabel.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        self.downloadProgressLabel.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
+        self.downloadProgressLabel.setWordWrap(False)
 
-        self.horizontalLayout.addWidget(self.titleLabel)
-
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_2)
-
-
-        self.gridLayout_2.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.frameDownloadProgress, 4, 0, 1, 2)
 
         self.urlTextBox = QPlainTextEdit(self.centralwidget)
         self.urlTextBox.setObjectName(u"urlTextBox")
         self.urlTextBox.setFont(font)
 
-        self.gridLayout_2.addWidget(self.urlTextBox, 1, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.urlTextBox, 1, 0, 1, 2)
 
         self.frame = QFrame(self.centralwidget)
         self.frame.setObjectName(u"frame")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
-        self.frame.setSizePolicy(sizePolicy1)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
+        self.frame.setSizePolicy(sizePolicy3)
         self.frame.setMinimumSize(QSize(0, 0))
         self.frame.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame.setFrameShadow(QFrame.Shadow.Raised)
@@ -173,43 +226,36 @@ class Ui_MainWindow(object):
 
         self.gridLayout_2.addWidget(self.frame, 3, 0, 1, 2)
 
-        self.progressBar = QProgressBar(self.centralwidget)
-        self.progressBar.setObjectName(u"progressBar")
-        self.progressBar.setEnabled(True)
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.progressBar.sizePolicy().hasHeightForWidth())
-        self.progressBar.setSizePolicy(sizePolicy2)
-        self.progressBar.setMinimumSize(QSize(400, 25))
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.titleLabel = QLabel(self.centralwidget)
+        self.titleLabel.setObjectName(u"titleLabel")
+        sizePolicy2.setHeightForWidth(self.titleLabel.sizePolicy().hasHeightForWidth())
+        self.titleLabel.setSizePolicy(sizePolicy2)
         font4 = QFont()
         font4.setFamilies([u"Consolas"])
+        font4.setPointSize(24)
         font4.setBold(True)
-        self.progressBar.setFont(font4)
-        self.progressBar.setAutoFillBackground(False)
-        self.progressBar.setValue(50)
-        self.progressBar.setTextVisible(True)
-        self.progressBar.setInvertedAppearance(False)
+        self.titleLabel.setFont(font4)
+        self.titleLabel.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
 
-        self.gridLayout_2.addWidget(self.progressBar, 5, 0, 1, 2)
+        self.horizontalLayout.addWidget(self.titleLabel)
 
-        self.downloadProgressLabel = QLabel(self.centralwidget)
-        self.downloadProgressLabel.setObjectName(u"downloadProgressLabel")
-        self.downloadProgressLabel.setEnabled(True)
-        sizePolicy.setHeightForWidth(self.downloadProgressLabel.sizePolicy().hasHeightForWidth())
-        self.downloadProgressLabel.setSizePolicy(sizePolicy)
-        self.downloadProgressLabel.setMinimumSize(QSize(0, 0))
-        self.downloadProgressLabel.setTabletTracking(False)
-        self.downloadProgressLabel.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-        self.downloadProgressLabel.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
-        self.downloadProgressLabel.setWordWrap(False)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_2.addWidget(self.downloadProgressLabel, 6, 0, 1, 1)
+        self.horizontalLayout.addItem(self.horizontalSpacer_2)
+
+
+        self.gridLayout_2.addLayout(self.horizontalLayout, 0, 0, 1, 2)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 569, 33))
+        self.menubar.setGeometry(QRect(0, 0, 570, 33))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -218,8 +264,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         QMetaObject.connectSlotsByName(MainWindow)
+    # setupUi
 
-    # retranslateUi
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Simple YT-DLP", None))
 #if QT_CONFIG(tooltip)
@@ -232,7 +278,7 @@ class Ui_MainWindow(object):
         self.downloadPath.setText("")
         self.downloadPath.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Download Path", None))
         self.pathButton.setText(QCoreApplication.translate("MainWindow", u"Change", None))
-        self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"SIMPLE YT-DLP", None))
+        self.downloadProgressLabel.setText(QCoreApplication.translate("MainWindow", u"0/0", None))
 #if QT_CONFIG(statustip)
         self.urlTextBox.setStatusTip(QCoreApplication.translate("MainWindow", u"Insert URLs here.", None))
 #endif // QT_CONFIG(statustip)
@@ -266,7 +312,8 @@ class Ui_MainWindow(object):
         self.downloadButton.setStatusTip(QCoreApplication.translate("MainWindow", u"Download all the URLs present above.", None))
 #endif // QT_CONFIG(statustip)
         self.downloadButton.setText(QCoreApplication.translate("MainWindow", u"DOWNLOAD", None))
-        self.downloadProgressLabel.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"SIMPLE YT-DLP", None))
+    # retranslateUi
     
     # Setup Functions
     def setupFunctions(self):
@@ -276,6 +323,9 @@ class Ui_MainWindow(object):
 
         # Show placeholder text
         self.videoQualities.setCurrentIndex(-1)
+
+        # Hide Download Frame
+        self.frameDownloadProgress.setHidden(True)
 
     # Message Box    
     def show_message(self, message, sucess):
@@ -308,13 +358,14 @@ class Ui_MainWindow(object):
             return
         
         url = url_text.split()
-        qUrl = url_text.count("youtube")
+        qUrl = str(url_text.count("https"))
         audio_only = self.isAudioOnly.isChecked()
         playlist = self.isPlaylist.isChecked()
         quality = self.videoQualities.currentText()
         dPath = self.downloadPath.text()
 
         self.progressBar.setValue(0)
+        self.frameDownloadProgress.setHidden(False)
         self.progressBar.setHidden(False)
         self.downloadProgressLabel.setHidden(False)
         
@@ -322,19 +373,23 @@ class Ui_MainWindow(object):
         self.thread = downloadThread(url, qUrl,audio= audio_only, playlist= playlist, quality= quality, dPath= dPath)
         self.thread.progress_changed.connect(self.progressBar.setValue)
         self.thread.finished.connect(self.show_message)
+        self.thread.fDownloadProgress.connect(self.frameDownloadProgress.setHidden)
         self.thread.pBarDisplay.connect(self.progressBar.setHidden)
-        self.thread.pLabelDisplay.connect(self.downloadProgressLabel.setHidden)
+        self.thread.dCountDisplay.connect(self.downloadProgressLabel.setHidden)
+        self.thread.dCountTotal.connect(self.downloadProgressLabel.setText)
         self.thread.start()
 
 # Download Class
 class downloadThread(QThread):
     progress_changed = Signal(int)
     finished = Signal(str, bool)
+    fDownloadProgress = Signal(bool)
     pBarDisplay = Signal(bool)
-    pLabelDisplay = Signal(bool)
+    dCountDisplay = Signal(bool)
+    dCountTotal = Signal(str)
     dCount = 0
 
-    def __init__(self, url, qUrl,audio=True, quality="best", playlist=False, dPath=''):
+    def __init__(self, url, qUrl,audio=True, quality='best', playlist=False, dPath=''):
         super().__init__()
         self.url = url
         self.qUrl = qUrl
@@ -354,6 +409,7 @@ class downloadThread(QThread):
             elif d['status'] == 'finished':
                 self.progress_changed.emit(100)
                 self.dCount += 1
+                self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + self.qUrl)
 
         try:        
             if self.audio:
@@ -389,10 +445,12 @@ class downloadThread(QThread):
                 }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                self.dCountTotal.emit("0/" + self.qUrl)
                 ydl.download(self.url)
             self.finished.emit("Download Completed!", True)
+            self.fDownloadProgress.emit(True)
             self.pBarDisplay.emit(True)
-            self.pLabelDisplay.emit(True)
+            self.dCountDisplay.emit(True)
         except Exception as e:
             self.finished.emit(str(e), False)
 
