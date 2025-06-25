@@ -1,7 +1,7 @@
 # Functionality Imports
 from PySide6.QtCore import QThread, Signal, QSettings
 from PySide6.QtWidgets import QFileDialog
-from yt_dlp import YoutubeDL
+import yt_dlp
 
 # Interface Imports
 # -*- coding: utf-8 -*-
@@ -315,8 +315,8 @@ class Ui_MainWindow(object):
 		self.titleLabel.setText(QCoreApplication.translate("MainWindow", u"SIMPLE YT-DLP", None))
 	# retranslateUi
 
-	# Setup Functions
-	def setupFunctions(self):
+	# Setup Functionalities
+	def setupFunctionalities(self):
 		# Make buttons work
 		self.downloadButton.clicked.connect(self.startDownload)
 		self.pathButton.clicked.connect(self.downloadDirectory)
@@ -356,9 +356,11 @@ class Ui_MainWindow(object):
 		if not url_text:
 			self.show_message("Please paste at least one URL.", False)
 			return
-		
 		url = url_text.split()
+		pUrl = url_text
 		qUrl = str(url_text.count("https"))
+
+
 		audio_only = self.isAudioOnly.isChecked()
 		playlist = self.isPlaylist.isChecked()
 		quality = self.videoQualities.currentText()
@@ -370,7 +372,7 @@ class Ui_MainWindow(object):
 		self.downloadProgressLabel.setHidden(False)
 		
 
-		self.thread = downloadThread(url, qUrl,audio= audio_only, playlist= playlist, quality= quality, dPath= dPath)
+		self.thread = downloadThread(url, qUrl, pUrl, audio= audio_only, playlist= playlist, quality= quality, dPath= dPath)
 		self.thread.progress_changed.connect(self.progressBar.setValue)
 		self.thread.finished.connect(self.show_message)
 		self.thread.fDownloadProgress.connect(self.frame_2.setHidden)
@@ -388,18 +390,23 @@ class downloadThread(QThread):
 	dCountDisplay = Signal(bool)
 	dCountTotal = Signal(str)
 	dCount = 0
+	dpCount = 0
 
-	def __init__(self, url, qUrl,audio=True, quality='best', playlist=False, dPath=''):
+	def __init__(self, url, qUrl, pUrl, audio=True, quality='best', playlist=False, dPath=''):
 		super().__init__()
 		self.url = url
 		self.qUrl = qUrl
+		self.pUrl = pUrl
 		self.audio = audio
 		self.quality = quality
 		self.playlist = playlist
 		self.dPath = dPath
 
 	def run(self):
+		
 		def progress_hook(d):
+			self.dCountTotal.emit('0/' + str(self.qUrl))
+
 			if self.audio:	
 				if d['status'] == 'downloading':
 					total = d.get('total_bytes') or d.get('total_bytes_estimated')
@@ -424,10 +431,19 @@ class downloadThread(QThread):
 					self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + self.qUrl)
 			
 		def progress_hookP(d):
+			if 'playlist_count' in d['info_dict'] and self.dpCount == 0:
+				total_videos = d['info_dict'].get('playlist_count')
+				self.dCountTotal.emit('0/' + str(total_videos))
+				self.dpCount = 1
+			elif 'playlist_count' not in d['info_dict'] and self.dpCount == 0:
+				total_videos = 'NaN'
+				self.dpCount = 1
+
 			if self.audio:	
 				if d['status'] == 'downloading':
 					total = d.get('total_bytes') or d.get('total_bytes_estimated')
 					downloaded = d.get('downloaded_bytes', 0)
+
 					if total:
 						percent = int((downloaded/total)*100)
 						self.progress_changed.emit(percent)
@@ -439,6 +455,9 @@ class downloadThread(QThread):
 					if d['status'] == 'downloading':
 						total = d.get('total_bytes') or d.get('total_bytes_estimated')
 						downloaded = d.get('downloaded_bytes', 0)
+
+						self.dCountTotal.emit('0/' + str(total_videos))
+
 						if total:
 							percent = int((downloaded/total)*100)
 							self.progress_changed.emit(percent)
@@ -449,9 +468,9 @@ class downloadThread(QThread):
 					
 		try:
 			if not self.playlist:        
-				if self.audio:
-					path = self.dPath + '/%(title)s'
-					
+				path = self.dPath + '/%(title)s'
+
+				if self.audio:					
 					ydl_opts = {
 					'format': 'bestaudio/best',
 					'postprocessors': [{
@@ -472,35 +491,25 @@ class downloadThread(QThread):
 					}
 					quality = quality_options.get(self.quality, 'bestvideo+bestaudio')
 
-					path = self.dPath + '/%(title)s'
-
 					ydl_opts = {
 					'format': quality,
 					'outtmpl': path,
 					'noplaylist': not self.playlist,
 					'progress_hooks': [progress_hook],
 					}
-				with YoutubeDL(ydl_opts) as ydl:
+				with yt_dlp.YoutubeDL(ydl_opts) as ydl:
 					self.dCountTotal.emit("0/" + self.qUrl)
 					ydl.download(self.url)
 				self.finished.emit("Download Completed!", True)
 				self.fDownloadProgress.emit(True)
 				self.pBarDisplay.emit(True)
 				self.dCountDisplay.emit(True)
+
 			# Arrumar contador maximo playlist
 			else:
-				ydl_opts = {
-					'extract_flat': True,
-					'quiet': True,
-				}
-				with YoutubeDL(ydl_opts) as ydl:
-					info = ydl.extract_info(url=self.url, download=False)
-					total_videos = len(info['entries'])
-					print(total_videos)
-				
+				path = self.dPath + '/%(playlist)s' + '/%(title)s'
+
 				if self.audio:
-					path = self.dPath + '/%(title)s'
-					
 					ydl_opts = {
 					'format': 'bestaudio/best',
 					'postprocessors': [{
@@ -521,23 +530,21 @@ class downloadThread(QThread):
 					}
 					quality = quality_options.get(self.quality, 'bestvideo+bestaudio')
 
-					path = self.dPath + '/%(title)s'
-
 					ydl_opts = {
 					'format': quality,
 					'outtmpl': path,
 					'noplaylist': not self.playlist,
 					'progress_hooks': [progress_hookP],
 					}
-				with YoutubeDL(ydl_opts) as ydl:
-					self.dCountTotal.emit("0/" + str(total_videos))
+
+				with yt_dlp.YoutubeDL(ydl_opts) as ydl:
 					ydl.download(self.url)
+					
 				self.finished.emit("Download Completed!", True)
 				self.fDownloadProgress.emit(True)
 				self.pBarDisplay.emit(True)
 				self.dCountDisplay.emit(True)
 
-		
 		except Exception as e:
 			self.finished.emit(str(e), False)
 			self.fDownloadProgress.emit(True)
@@ -552,7 +559,7 @@ if __name__ == "__main__":
 	MainWindow = QMainWindow()
 	ui = Ui_MainWindow()
 	ui.setupUi(MainWindow)
-	ui.setupFunctions()
+	ui.setupFunctionalities()
 	ui.loadDownloadDirectory()
 	ui.progressBar.setHidden(True)
 	ui.downloadProgressLabel.setHidden(True)
