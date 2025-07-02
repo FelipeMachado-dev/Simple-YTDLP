@@ -116,13 +116,15 @@ class Ui_MainWindow(object):
 		font1.setBold(True)
 		self.progressBar.setFont(font1)
 		self.progressBar.setAutoFillBackground(False)
-		self.progressBar.setValue(50)
+		self.progressBar.setValue(0)
+		self.progressBar.setAlignment(Qt.AlignmentFlag.AlignCenter)
 		self.progressBar.setTextVisible(True)
 		self.progressBar.setInvertedAppearance(False)
+		self.progressBar.setTextDirection(QProgressBar.Direction.TopToBottom)
 		self.downloadProgressLabel = QLabel(self.frame_2)
 		self.downloadProgressLabel.setObjectName(u"downloadProgressLabel")
 		self.downloadProgressLabel.setEnabled(True)
-		self.downloadProgressLabel.setGeometry(QRect(509, 13, 21, 14))
+		self.downloadProgressLabel.setGeometry(QRect(470, 10, 91, 20))
 		sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 		sizePolicy2.setHorizontalStretch(0)
 		sizePolicy2.setVerticalStretch(0)
@@ -132,7 +134,7 @@ class Ui_MainWindow(object):
 		self.downloadProgressLabel.setFont(font1)
 		self.downloadProgressLabel.setTabletTracking(False)
 		self.downloadProgressLabel.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-		self.downloadProgressLabel.setAlignment(Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignTrailing|Qt.AlignmentFlag.AlignVCenter)
+		self.downloadProgressLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 		self.downloadProgressLabel.setWordWrap(False)
 
 		self.gridLayout_2.addWidget(self.frame_2, 4, 0, 1, 2)
@@ -405,41 +407,51 @@ class downloadThread(QThread):
 	def run(self):
 		
 		def progress_hook(d):
-			self.dCountTotal.emit('0/' + str(self.qUrl))
+			if self.audio:
+				self.dCountTotal.emit((str(self.dCount)) + '/' + self.qUrl)
 
-			if self.audio:	
 				if d['status'] == 'downloading':
 					total = d.get('total_bytes') or d.get('total_bytes_estimated')
 					downloaded = d.get('downloaded_bytes', 0)
 					if total:
 						percent = int((downloaded/total)*100)
 						self.progress_changed.emit(percent)
+					else:
+						fragTotal = d.get('fragment_count')
+						fragIndex = d.get('fragment_index')
+						percent = int((fragIndex/fragTotal)*100)
+						self.progress_changed.emit(percent)
+
 				elif d['status'] == 'finished':
 					self.progress_changed.emit(100)
 					self.dCount += 1
 					self.dCountTotal.emit((str(self.dCount)) + '/' + self.qUrl)
 			else:
+				self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + self.qUrl)
+
 				if d['status'] == 'downloading':
 					total = d.get('total_bytes') or d.get('total_bytes_estimated')
 					downloaded = d.get('downloaded_bytes', 0)
 					if total:
 						percent = int((downloaded/total)*100)
 						self.progress_changed.emit(percent)
+					else:
+						fragTotal = d.get('fragment_count')
+						fragIndex = d.get('fragment_index')
+						percent = int((fragIndex/fragTotal)*100)
+						self.progress_changed.emit(percent)
+
 				elif d['status'] == 'finished':
 					self.progress_changed.emit(100)
 					self.dCount += 1
 					self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + self.qUrl)
 			
 		def progress_hookP(d):
-			if 'playlist_count' in d['info_dict'] and self.dpCount == 0:
-				total_videos = d['info_dict'].get('playlist_count')
-				self.dCountTotal.emit('0/' + str(total_videos))
-				self.dpCount = 1
-			elif 'playlist_count' not in d['info_dict'] and self.dpCount == 0:
-				total_videos = 'NaN'
-				self.dpCount = 1
+			total_videos = d['info_dict'].get('playlist_count')
 
-			if self.audio:	
+			if self.audio:
+				self.dCountTotal.emit(str(self.dCount) + '/' + str(total_videos))
+
 				if d['status'] == 'downloading':
 					total = d.get('total_bytes') or d.get('total_bytes_estimated')
 					downloaded = d.get('downloaded_bytes', 0)
@@ -447,24 +459,36 @@ class downloadThread(QThread):
 					if total:
 						percent = int((downloaded/total)*100)
 						self.progress_changed.emit(percent)
+					else:
+						fragTotal = d.get('fragment_count')
+						fragIndex = d.get('fragment_index')
+						percent = int((fragIndex/fragTotal)*100)
+						self.progress_changed.emit(percent)
+
 				elif d['status'] == 'finished':
 					self.progress_changed.emit(100)
 					self.dCount += 1
-					self.dCountTotal.emit((str(self.dCount)) + '/' + str(total_videos))
-				else:
-					if d['status'] == 'downloading':
-						total = d.get('total_bytes') or d.get('total_bytes_estimated')
-						downloaded = d.get('downloaded_bytes', 0)
+					self.dCountTotal.emit(str(self.dCount) + '/' + str(total_videos))
+			else:
+				self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + str(total_videos))
 
-						self.dCountTotal.emit('0/' + str(total_videos))
+				if d['status'] == 'downloading':
+					total = d.get('total_bytes') or d.get('total_bytes_estimated')
+					downloaded = d.get('downloaded_bytes', 0)
 
-						if total:
-							percent = int((downloaded/total)*100)
-							self.progress_changed.emit(percent)
-					elif d['status'] == 'finished':
-						self.progress_changed.emit(100)
-						self.dCount += 1
-						self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + str(total_videos))
+					if total:
+						percent = int((downloaded/total)*100)
+						self.progress_changed.emit(percent)
+					else:
+						fragTotal = d.get('fragment_count')
+						fragIndex = d.get('fragment_index')
+						percent = int((fragIndex/fragTotal)*100)
+						self.progress_changed.emit(percent)
+
+				elif d['status'] == 'finished':
+					self.progress_changed.emit(100)
+					self.dCount += 1
+					self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + str(total_videos))
 					
 		try:
 			if not self.playlist:        
