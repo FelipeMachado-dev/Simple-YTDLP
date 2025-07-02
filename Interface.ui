@@ -243,13 +243,19 @@
         <bool>false</bool>
        </property>
        <property name="value">
-        <number>50</number>
+        <number>100</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
        <property name="textVisible">
         <bool>true</bool>
        </property>
        <property name="invertedAppearance">
         <bool>false</bool>
+       </property>
+       <property name="textDirection">
+        <enum>QProgressBar::Direction::TopToBottom</enum>
        </property>
       </widget>
       <widget class="QLabel" name="downloadProgressLabel">
@@ -258,10 +264,10 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>509</x>
-         <y>13</y>
-         <width>21</width>
-         <height>14</height>
+         <x>470</x>
+         <y>10</y>
+         <width>91</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -289,10 +295,10 @@
         <enum>Qt::LayoutDirection::LeftToRight</enum>
        </property>
        <property name="text">
-        <string>0/0</string>
+        <string>000/000</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+        <set>Qt::AlignmentFlag::AlignCenter</set>
        </property>
        <property name="wordWrap">
         <bool>false</bool>
