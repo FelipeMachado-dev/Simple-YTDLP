@@ -506,7 +506,7 @@ class downloadThread(QThread):
 					
 		try:
 			if not self.playlist:        
-				path = self.dPath + '/%(title)s'
+				path = self.dPath + '/%(title)s.%(ext)s'
 
 				if self.audio:					
 					ydl_opts = {
@@ -521,19 +521,20 @@ class downloadThread(QThread):
 					}
 				else:
 					quality_options ={
-					'360p': 'bestvideo[height<=360]+bestaudio/best',
-					'480p': 'bestvideo[height<=480]+bestaudio/best',
-					'720p': 'bestvideo[height<=720]+bestaudio/best',
-					'1080p': 'bestvideo[height<=1080]+bestaudio/best',
-					'1440p': 'bestvideo[height<=1440]+bestaudio/best',
+					'360p': 'bestvideo[height<=360][ext=mp4]+bestaudio[ext=m4a]/best',
+					'480p': 'bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/best',
+					'720p': 'bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best',
+					'1080p': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best',
+					'1440p': 'bestvideo[height<=1440][ext=mp4]+bestaudio[ext=m4a]/best',
 					}
-					quality = quality_options.get(self.quality, 'bestvideo+bestaudio')
+					quality = quality_options.get(self.quality, 'bestvideo[ext=mp4]+bestaudio[ext=m4a]')
 
 					ydl_opts = {
 					'format': quality,
 					'outtmpl': path,
 					'noplaylist': not self.playlist,
 					'progress_hooks': [progress_hook],
+					'merge_output_format': 'mp4',
 					}
 				with yt_dlp.YoutubeDL(ydl_opts) as ydl:
 					self.dCountTotal.emit("0/" + self.qUrl)
@@ -545,7 +546,7 @@ class downloadThread(QThread):
 
 			# Arrumar contador maximo playlist
 			else:
-				path = self.dPath + '/%(playlist)s' + '/%(title)s'
+				path = self.dPath + '/%(playlist)s' + '/%(title)s.%(ext)s'
 
 				if self.audio:
 					ydl_opts = {
@@ -560,19 +561,20 @@ class downloadThread(QThread):
 					}
 				else:
 					quality_options ={
-					'360p': 'bestvideo[height<=360]+bestaudio/best',
-					'480p': 'bestvideo[height<=480]+bestaudio/best',
-					'720p': 'bestvideo[height<=720]+bestaudio/best',
-					'1080p': 'bestvideo[height<=1080]+bestaudio/best',
-					'1440p': 'bestvideo[height<=1440]+bestaudio/best',
+					'360p': 'bestvideo[height<=360][ext=mp4]+bestaudio[ext=m4a]/best',
+					'480p': 'bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/best',
+					'720p': 'bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best',
+					'1080p': 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best',
+					'1440p': 'bestvideo[height<=1440][ext=mp4]+bestaudio[ext=m4a]/best',
 					}
-					quality = quality_options.get(self.quality, 'bestvideo+bestaudio')
+					quality = quality_options.get(self.quality, 'bestvideo[ext=mp4]+bestaudio[ext=m4a]')
 
 					ydl_opts = {
 					'format': quality,
 					'outtmpl': path,
 					'noplaylist': not self.playlist,
 					'progress_hooks': [progress_hookP],
+					'merge_output_format': 'mp4',
 					}
 
 				with yt_dlp.YoutubeDL(ydl_opts) as ydl:
