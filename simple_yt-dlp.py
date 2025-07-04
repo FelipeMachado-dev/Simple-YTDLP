@@ -80,6 +80,11 @@ class Ui_MainWindow(object):
 		self.frame_2.setPalette(palette)
 		self.frame_2.setFrameShape(QFrame.Shape.NoFrame)
 		self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
+		self.gridLayout_3 = QGridLayout(self.frame_2)
+		self.gridLayout_3.setObjectName(u"gridLayout_3")
+		self.gridLayout_3.setHorizontalSpacing(6)
+		self.gridLayout_3.setVerticalSpacing(16)
+		self.gridLayout_3.setContentsMargins(9, 0, 9, 0)
 		self.progressBar = QProgressBar(self.frame_2)
 		self.progressBar.setObjectName(u"progressBar")
 		self.progressBar.setEnabled(True)
@@ -121,10 +126,12 @@ class Ui_MainWindow(object):
 		self.progressBar.setTextVisible(True)
 		self.progressBar.setInvertedAppearance(False)
 		self.progressBar.setTextDirection(QProgressBar.Direction.TopToBottom)
+
+		self.gridLayout_3.addWidget(self.progressBar, 0, 0, 2, 2)
+
 		self.downloadProgressLabel = QLabel(self.frame_2)
 		self.downloadProgressLabel.setObjectName(u"downloadProgressLabel")
 		self.downloadProgressLabel.setEnabled(True)
-		self.downloadProgressLabel.setGeometry(QRect(470, 10, 91, 20))
 		sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 		sizePolicy2.setHorizontalStretch(0)
 		sizePolicy2.setVerticalStretch(0)
@@ -134,8 +141,15 @@ class Ui_MainWindow(object):
 		self.downloadProgressLabel.setFont(font1)
 		self.downloadProgressLabel.setTabletTracking(False)
 		self.downloadProgressLabel.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+		self.downloadProgressLabel.setFrameShape(QFrame.Shape.NoFrame)
+		self.downloadProgressLabel.setLineWidth(1)
+		self.downloadProgressLabel.setMidLineWidth(0)
 		self.downloadProgressLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 		self.downloadProgressLabel.setWordWrap(False)
+		self.downloadProgressLabel.setMargin(0)
+		self.downloadProgressLabel.setIndent(-1)
+
+		self.gridLayout_3.addWidget(self.downloadProgressLabel, 1, 1, 1, 1)
 
 		self.gridLayout_2.addWidget(self.frame_2, 4, 0, 1, 2)
 
