@@ -353,7 +353,8 @@ class Ui_MainWindow(object):
 
 	# Select and save download directory
 	def downloadDirectory(self):
-		directory = QFileDialog.getExistingDirectory(None, "Select Directory")
+		current_dir = self.downloadPath.text()
+		directory = QFileDialog.getExistingDirectory(None, "Select Directory", current_dir)
 		if directory:
 			self.downloadPath.setText(directory)
 
@@ -374,7 +375,7 @@ class Ui_MainWindow(object):
 			return
 		url = url_text.split()
 		pUrl = url_text
-		qUrl = str(url_text.count("https"))
+		qUrl = str(url_text.count("https:"))
 
 
 		audio_only = self.isAudioOnly.isChecked()
