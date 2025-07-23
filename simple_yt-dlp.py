@@ -294,7 +294,7 @@ class Ui_MainWindow(object):
 		self.downloadPath.setText("")
 		self.downloadPath.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Download Path", None))
 		self.pathButton.setText(QCoreApplication.translate("MainWindow", u"Change", None))
-		self.downloadProgressLabel.setText(QCoreApplication.translate("MainWindow", u"0/0", None))
+		self.downloadProgressLabel.setText(QCoreApplication.translate("MainWindow", u"Getting Data... 0/0", None))
 	#if QT_CONFIG(statustip)
 		self.urlTextBox.setStatusTip(QCoreApplication.translate("MainWindow", u"Insert URLs here.", None))
 	#endif // QT_CONFIG(statustip)
@@ -422,9 +422,9 @@ class downloadThread(QThread):
 		
 		def progress_hook(d):
 			if self.audio:
-				self.dCountTotal.emit((str(self.dCount)) + '/' + self.qUrl)
-
 				if d['status'] == 'downloading':
+					self.dCountTotal.emit('Downloading... ' + (str(self.dCount)) + '/' + self.qUrl)
+
 					total = d.get('total_bytes') or d.get('total_bytes_estimated')
 					downloaded = d.get('downloaded_bytes', 0)
 					if total:
@@ -439,11 +439,11 @@ class downloadThread(QThread):
 				elif d['status'] == 'finished':
 					self.progress_changed.emit(100)
 					self.dCount += 1
-					self.dCountTotal.emit((str(self.dCount)) + '/' + self.qUrl)
+					self.dCountTotal.emit('Converting... ' + (str(self.dCount)) + '/' + self.qUrl)
 			else:
-				self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + self.qUrl)
-
 				if d['status'] == 'downloading':
+					self.dCountTotal.emit('Downloading... ' + (str(int(self.dCount/2))) + '/' + self.qUrl)
+
 					total = d.get('total_bytes') or d.get('total_bytes_estimated')
 					downloaded = d.get('downloaded_bytes', 0)
 					if total:
@@ -458,15 +458,15 @@ class downloadThread(QThread):
 				elif d['status'] == 'finished':
 					self.progress_changed.emit(100)
 					self.dCount += 1
-					self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + self.qUrl)
+					self.dCountTotal.emit('Converting... ' + (str(int(self.dCount/2))) + '/' + self.qUrl)
 			
 		def progress_hookP(d):
 			total_videos = d['info_dict'].get('playlist_count')
 
 			if self.audio:
-				self.dCountTotal.emit(str(self.dCount) + '/' + str(total_videos))
-
 				if d['status'] == 'downloading':
+					self.dCountTotal.emit('Downloading... ' + str(self.dCount) + '/' + str(total_videos))
+
 					total = d.get('total_bytes') or d.get('total_bytes_estimated')
 					downloaded = d.get('downloaded_bytes', 0)
 
@@ -482,11 +482,11 @@ class downloadThread(QThread):
 				elif d['status'] == 'finished':
 					self.progress_changed.emit(100)
 					self.dCount += 1
-					self.dCountTotal.emit(str(self.dCount) + '/' + str(total_videos))
+					self.dCountTotal.emit('Converting... ' + str(self.dCount) + '/' + str(total_videos))
 			else:
-				self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + str(total_videos))
-
 				if d['status'] == 'downloading':
+					self.dCountTotal.emit('Downloading... ' + (str(int(self.dCount/2))) + '/' + str(total_videos))
+
 					total = d.get('total_bytes') or d.get('total_bytes_estimated')
 					downloaded = d.get('downloaded_bytes', 0)
 
@@ -502,7 +502,7 @@ class downloadThread(QThread):
 				elif d['status'] == 'finished':
 					self.progress_changed.emit(100)
 					self.dCount += 1
-					self.dCountTotal.emit((str(int(self.dCount/2))) + '/' + str(total_videos))
+					self.dCountTotal.emit('Converting... ' + (str(int(self.dCount/2))) + '/' + str(total_videos))
 					
 		try:
 			if not self.playlist:        
